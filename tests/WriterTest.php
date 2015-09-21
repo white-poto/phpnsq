@@ -21,6 +21,7 @@ class WriterTest extends PHPUnit_Framework_TestCase
 
         $socket_client = stream_socket_client('tcp://127.0.0.1:4150', $errno, $errstr, 30);
         fwrite($socket_client, $this->writer->magic());
+        var_dump($this->writer->publish("test", "test"));
         fwrite($socket_client, $this->writer->publish("test", "test"));
         sleep(2);
 
