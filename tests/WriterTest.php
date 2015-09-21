@@ -20,6 +20,7 @@ class WriterTest extends PHPUnit_Framework_TestCase
 
     protected function setUp(){
         $this->writer = new \Nsq\Encoding\Writer();
+        $this->reader = new \Nsq\Encoding\Reader();
     }
 
     public function testClose(){
