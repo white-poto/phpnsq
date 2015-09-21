@@ -40,16 +40,19 @@ class Reader
     {
         $this->size = $this->readSize($data);
         if ($this->size === false) {
+            echo "size" . PHP_EOL;
             return false;
         }
 
         $this->type = $this->readType($data);
         if ($this->type === false) {
+            echo "type" . PHP_EOL;
             return false;
         }
 
         $this->content = $this->readContent($data);
         if ($this->content === false) {
+            echo "content" . PHP_EOL;
             return false;
         }
         var_dump($this->size);
