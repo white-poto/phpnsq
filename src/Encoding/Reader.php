@@ -52,6 +52,9 @@ class Reader
         if ($this->content === false) {
             return false;
         }
+        var_dump($this->size);
+        var_dump($this->type);
+        var_dump($this->content);
     }
 
     public function readSize($data)
