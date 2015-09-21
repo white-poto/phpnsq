@@ -80,7 +80,7 @@ class Reader
     protected function readContent($data)
     {
         echo $this->size . PHP_EOL;
-        if (strlen($data) < $this->size + 8) {
+        if (strlen($data) < $this->size) {
             return false;
         }
 
