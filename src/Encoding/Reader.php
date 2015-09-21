@@ -69,9 +69,10 @@ class Reader
 
     public function readType($data)
     {
-        if (strlen($data) < 1) {
+        if (strlen($data) < 8) {
             return false;
         }
+        $type_data = substr($data, 4);
         $type = unpack("N", $data);
 
         return $type[1];
