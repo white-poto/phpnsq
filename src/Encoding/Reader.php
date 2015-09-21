@@ -73,7 +73,7 @@ class Reader
         $meta = substr($data, 0, 1);
         $type = unpack("N", ord($meta) & 15);
 
-        return $type[1]
+        return $type[1];
     }
 
     protected function readContent($data)
