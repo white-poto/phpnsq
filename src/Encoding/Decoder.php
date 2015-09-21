@@ -11,31 +11,70 @@ namespace Nsq\Encoding;
 
 class Decoder
 {
+    /**
+     *
+     */
     const FRAME_TYPE_RESPONSE = 0;
+    /**
+     *
+     */
     const FRAME_TYPE_ERROR = 1;
+    /**
+     *
+     */
     const FRAME_TYPE_MESSAGE = 2;
 
+    /**
+     * @var
+     */
     protected $size;
 
+    /**
+     * @var
+     */
     protected $type;
 
+    /**
+     * @var
+     */
     protected $content;
 
+    /**
+     * @return mixed
+     */
     public function getSize()
     {
         return $this->size;
     }
 
+    /**
+     * @return mixed
+     */
     public function getType()
     {
         return $this->type;
     }
 
+    /**
+     * @return mixed
+     */
     public function getContent()
     {
         return $this->content;
     }
 
+    /**
+     * @return Message
+     */
+    public function getMessage()
+    {
+        return new Message($this->content);
+    }
+
+    /**
+     * @param $data
+     * @return bool
+     */
     public function decode($data)
     {
         $this->size = $this->readSize($data);
@@ -56,6 +95,10 @@ class Decoder
         return true;
     }
 
+    /**
+     * @param $data
+     * @return bool
+     */
     public function readSize($data)
     {
         if (strlen($data) < 1) {
@@ -66,6 +109,10 @@ class Decoder
         return $size[1];
     }
 
+    /**
+     * @param $data
+     * @return bool
+     */
     public function readType($data)
     {
         if (strlen($data) < 8) {
@@ -77,6 +124,10 @@ class Decoder
         return $type[1];
     }
 
+    /**
+     * @param $data
+     * @return bool|string
+     */
     protected function readContent($data)
     {
         echo $this->size . PHP_EOL;

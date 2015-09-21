@@ -46,6 +46,4 @@ class Message
     {
         return $this->getAttempts();
     }
-
-
 }
