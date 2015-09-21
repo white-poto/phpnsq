@@ -52,9 +52,6 @@ class Reader
         if ($this->content === false) {
             return false;
         }
-        var_dump($this->size);
-        var_dump($this->type);
-        var_dump($this->content);
     }
 
     public function readSize($data)
@@ -62,7 +59,8 @@ class Reader
         if (strlen($data) < 1) {
             return false;
         }
-        $size = unpack("N", $data);
+        $meta = substr($data, 0, 1);
+        $size = unpack("N", ord($meta) & 240);
 
         return $size[1];
     }
@@ -72,9 +70,10 @@ class Reader
         if (strlen($data) < 1) {
             return false;
         }
-        $type = unpack("N", $data);
+        $meta = substr($data, 0, 1);
+        $type = unpack("N", ord($meta) & 15);
 
-        return $type[1];
+        return $type[1]
     }
 
     protected function readContent($data)
