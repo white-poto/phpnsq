@@ -59,22 +59,20 @@ class Reader
 
     public function readSize($data)
     {
-        if (strlen($data) < 4) {
+        if (strlen($data) < 1) {
             return false;
         }
-        $size_data = substr($data, 0, 4);
-        $size = unpack("N", $size_data);
+        $size = unpack("N", $data);
 
         return $size[1];
     }
 
     public function readType($data)
     {
-        if (strlen($data) < 8) {
+        if (strlen($data) < 1) {
             return false;
         }
-        $type_data = substr($data, 4, 8);
-        $type = unpack("N", $type_data);
+        $type = unpack("N", $data);
 
         return $type[1];
     }
