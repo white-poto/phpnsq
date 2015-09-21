@@ -9,33 +9,32 @@
 class WriterTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Nsq\Encoding\Writer
+     * @var \Nsq\Encoding\Encoder
      */
-    protected $writer;
+    protected $encoder;
 
     /**
-     * @var \Nsq\Encoding\Reader
+     * @var \Nsq\Encoding\Decoder
      */
-    protected $reader;
+    protected $decoder;
 
     protected function setUp(){
-        $this->writer = new \Nsq\Encoding\Writer();
-        $this->reader = new \Nsq\Encoding\Reader();
+        $this->encoder = new \Nsq\Encoding\Encoder();
+        $this->decoder = new \Nsq\Encoding\Decoder();
     }
 
     public function testClose(){
 
         $socket_client = stream_socket_client('tcp://127.0.0.1:4150', $errno, $errstr, 30);
-        fwrite($socket_client, $this->writer->magic());
-        fwrite($socket_client, $this->writer->publish("test", "test"));
+        fwrite($socket_client, $this->encoder->magic());
+        fwrite($socket_client, $this->encoder->publish("test", "test"));
         $data = fread($socket_client, 1024);
-        $result = $this->reader->decode($data);
+        $result = $this->decoder->decode($data);
         $this->assertTrue($result);
-        $this->assertEquals("OK", $this->reader->getContent());
-        $this->assertEquals(6, $this->reader->getSize());
-        $this->assertEquals(0, $this->reader->getType());
+        $this->assertEquals("OK", $this->decoder->getContent());
+        $this->assertEquals(6, $this->decoder->getSize());
+        $this->assertEquals(0, $this->decoder->getType());
         sleep(5);
-        fwrite($socket_client, $this->writer->close());
-
+        fwrite($socket_client, $this->encoder->close());
     }
 }

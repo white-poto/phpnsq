@@ -9,7 +9,7 @@
 namespace Nsq\Encoding;
 
 
-class Writer
+class Encoder
 {
     const MAGIC_V2 = '  V2';
 

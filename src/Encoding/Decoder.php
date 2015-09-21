@@ -9,7 +9,7 @@
 namespace Nsq\Encoding;
 
 
-class Reader
+class Decoder
 {
     const FRAME_TYPE_RESPONSE = 0;
     const FRAME_TYPE_ERROR = 1;
