@@ -32,7 +32,7 @@ class WriterTest extends PHPUnit_Framework_TestCase
         $result = $this->reader->decode($data);
         $this->assertTrue($result);
         $this->assertEquals("OK", $this->reader->getContent());
-        $this->assertEquals(2, $this->reader->getSize());
+        $this->assertEquals(6, $this->reader->getSize());
         $this->assertEquals(0, $this->reader->getType());
         sleep(5);
         fwrite($socket_client, $this->writer->close());
