@@ -23,6 +23,8 @@ class WriterTest extends PHPUnit_Framework_TestCase
         fwrite($socket_client, $this->writer->magic());
         var_dump($this->writer->publish("test", "test"));
         fwrite($socket_client, $this->writer->publish("test", "test"));
+        $data = fread($socket_client, 1024);
+        var_dump($data);
         sleep(2);
 
     }
