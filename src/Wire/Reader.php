@@ -38,5 +38,7 @@ class Reader
         }
     }
 
-    protected function readInt($data)
+    protected function readInt($data){
+
+    }
 }

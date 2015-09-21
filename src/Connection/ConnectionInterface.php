@@ -12,6 +12,4 @@ namespace Nsq\Connection;
 class ConnectionInterface
 {
 
-
-
 }
