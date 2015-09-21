@@ -73,7 +73,7 @@ class Reader
             return false;
         }
         $type_data = substr($data, 4);
-        $type = unpack("N", $data);
+        $type = unpack("N", $type_data);
 
         return $type[1];
     }
