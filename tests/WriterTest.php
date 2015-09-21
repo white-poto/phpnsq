@@ -13,6 +13,11 @@ class WriterTest extends PHPUnit_Framework_TestCase
      */
     protected $writer;
 
+    /**
+     * @var \Nsq\Encoding\Reader
+     */
+    protected $reader;
+
     protected function setUp(){
         $this->writer = new \Nsq\Encoding\Writer();
     }
@@ -24,7 +29,10 @@ class WriterTest extends PHPUnit_Framework_TestCase
         var_dump($this->writer->publish("test", "test"));
         fwrite($socket_client, $this->writer->publish("test", "test"));
         $data = fread($socket_client, 1024);
-        var_dump($data);
+        $this->reader->decode($data);
+        $this->assertEquals("OK", $this->reader->getContent());
+        $this->assertEquals(2, $this->reader->getSize());
+        $this->assertEquals(0, $this->reader->getType());
         sleep(2);
 
     }
