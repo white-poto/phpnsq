@@ -11,14 +11,29 @@ namespace Nsq\Encoding;
 
 class Message
 {
+    /**
+     * @var string
+     */
     protected $timestamp;
 
+    /**
+     * @var string
+     */
     protected $id;
 
+    /**
+     * @var string
+     */
     protected $body;
 
+    /**
+     * @var string
+     */
     protected $attempts;
 
+    /**
+     * @param $data
+     */
     public function __construct($data)
     {
         $this->timestamp = substr($data, 0, 8);
@@ -27,21 +42,33 @@ class Message
         $this->body = substr($data, 26);
     }
 
+    /**
+     * @return string
+     */
     public function getTimestamp()
     {
         return $this->timestamp;
     }
 
+    /**
+     * @return string
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function getBody()
     {
         return $this->body;
     }
 
+    /**
+     * @return string
+     */
     public function getAttempts()
     {
         return $this->getAttempts();

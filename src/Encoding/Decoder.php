@@ -11,36 +11,27 @@ namespace Nsq\Encoding;
 
 class Decoder
 {
-    /**
-     *
-     */
     const FRAME_TYPE_RESPONSE = 0;
-    /**
-     *
-     */
     const FRAME_TYPE_ERROR = 1;
-    /**
-     *
-     */
     const FRAME_TYPE_MESSAGE = 2;
 
     /**
-     * @var
+     * @var integer
      */
     protected $size;
 
     /**
-     * @var
+     * @var integer
      */
     protected $type;
 
     /**
-     * @var
+     * @var string
      */
     protected $content;
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getSize()
     {
@@ -48,7 +39,7 @@ class Decoder
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getType()
     {
@@ -56,7 +47,7 @@ class Decoder
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getContent()
     {
@@ -97,7 +88,7 @@ class Decoder
 
     /**
      * @param $data
-     * @return bool
+     * @return bool|int
      */
     public function readSize($data)
     {
@@ -106,12 +97,12 @@ class Decoder
         }
         $size = unpack("N", $data);
 
-        return $size[1];
+        return intval($size[1]);
     }
 
     /**
      * @param $data
-     * @return bool
+     * @return bool|int
      */
     public function readType($data)
     {
@@ -121,7 +112,7 @@ class Decoder
         $type_data = substr($data, 4, 4);
         $type = unpack("N", $type_data);
 
-        return $type[1];
+        return intval($type[1]);
     }
 
     /**
