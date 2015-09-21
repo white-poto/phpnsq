@@ -52,9 +52,8 @@ class Reader
         if ($this->content === false) {
             return false;
         }
-        var_dump($this->size);
-        var_dump($this->type);
-        var_dump($this->content);
+
+        return true;
     }
 
     public function readSize($data)
@@ -72,7 +71,7 @@ class Reader
         if (strlen($data) < 8) {
             return false;
         }
-        $type_data = substr($data, 4);
+        $type_data = substr($data, 4, 4);
         $type = unpack("N", $type_data);
 
         return $type[1];
