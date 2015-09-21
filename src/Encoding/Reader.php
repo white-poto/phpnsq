@@ -21,31 +21,35 @@ class Reader
 
     protected $content;
 
-    public function getSize(){
+    public function getSize()
+    {
         return $this->size;
     }
 
-    public function getType(){
+    public function getType()
+    {
         return $this->type;
     }
 
-    public function getContent(){
+    public function getContent()
+    {
         return $this->content;
     }
 
-    public function decode($data){
+    public function decode($data)
+    {
         $this->size = $this->readSize($data);
-        if($this->size === false){
+        if ($this->size === false) {
             return false;
         }
 
         $this->type = $this->readType($data);
-        if($this->type === false){
+        if ($this->type === false) {
             return false;
         }
 
         $this->content = $this->readContent($data);
-        if($this->content === false){
+        if ($this->content === false) {
             return false;
         }
     }
@@ -74,7 +78,7 @@ class Reader
 
     protected function readContent($data)
     {
-        if(strlen($data) < $this->size + 8){
+        if (strlen($data) < $this->size + 8) {
             return false;
         }
 
