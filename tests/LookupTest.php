@@ -37,6 +37,7 @@ class LookupTest extends PHPUnit_Framework_TestCase
 
     public function testClusterLookup()
     {
-
+        $hosts = $this->lookup_cluster->lookup("test");
+        $this->assertEquals($hosts['status_code'], 200);
     }
 }
