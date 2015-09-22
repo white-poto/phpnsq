@@ -63,6 +63,7 @@ class Decoder
     }
 
     /**
+     * if return false, it means that the data is not long enough.
      * @param $data
      * @return bool
      */

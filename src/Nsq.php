@@ -11,5 +11,5 @@ namespace Nsq;
 
 class Nsq
 {
-
+    const VERSION = "0.1";
 }
