@@ -58,12 +58,7 @@ class Connection
             throw new ConnectionException($message);
         }
 
-        $connect_result = socket_connect($this->socket, $host, $port);
-        if ($connect_result === false) {
-            $message = "socket_connect failed. reason:"
-                . socket_strerror(socket_last_error());
-            throw new ConnectionException($message);
-        }
+        socket_connect($this->socket, $host, $port);
 
         $this->buffer = '';
         $this->decoder = new Decoder();
