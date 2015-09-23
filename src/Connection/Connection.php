@@ -51,14 +51,20 @@ class Connection
                 . socket_strerror(socket_last_error());
             throw new ConnectionException($message);
         }
+
+        $connect_result = socket_connect($this->socket, $host, $port);
+        if ($connect_result === false) {
+            $message = "socket_connect failed. reason:"
+                . socket_strerror(socket_last_error());
+            throw new ConnectionException($message);
+        }
+
         $non_block = socket_set_nonblock($this->socket);
         if ($non_block === false) {
             $message = "socket_set_nonblock faild. reason:"
                 . socket_strerror(socket_last_error());
             throw new ConnectionException($message);
         }
-
-        socket_connect($this->socket, $host, $port);
 
         $this->buffer = '';
         $this->decoder = new Decoder();
