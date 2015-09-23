@@ -22,7 +22,7 @@ class Connection
     protected $socket;
 
     /**
-     * @var string
+     * @var Buffer
      */
     protected $buffer;
 
@@ -64,7 +64,7 @@ class Connection
             throw new ConnectionException($message);
         }
 
-        $this->buffer = '';
+        $this->buffer = new Buffer();
         $this->decoder = new Decoder();
     }
 
@@ -119,8 +119,8 @@ class Connection
     {
 
         $data = $size = $type = $content = NULL;
-        if (!empty($this->buffer)) {
-            $data = $this->buffer;
+        if (!$this->buffer->isEmpty()) {
+            $data = $this->buffer->get();
         }
 
         // read size
@@ -130,7 +130,7 @@ class Connection
                 return false;
             }
             $data .= $ret;
-            $this->appendBuffer($ret);
+            $this->buffer->append($ret);
         }
         $size = $this->decoder->readSize($data);
 
@@ -141,7 +141,7 @@ class Connection
                 return false;
             }
             $data .= $ret;
-            $this->appendBuffer($ret);
+            $this->buffer->append($ret);
 
         }
         $type = $this->decoder->readType($data);
@@ -153,10 +153,10 @@ class Connection
                 return false;
             }
             $data .= $ret;
-            $this->appendBuffer($ret);
+            $this->buffer->append($ret);
         }
         $content = $this->decoder->readContent($data);
-        $this->buffer = substr($this->buffer, 4 + $size);
+        $this->buffer->sub(4 + $size);
 
         return new Frame($size, $type, $content);
     }
