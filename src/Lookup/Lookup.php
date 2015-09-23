@@ -167,12 +167,12 @@ class Lookup
         $result = json_decode($json, true);
 
         if ($result === false) {
-            $message = "lookup host failed. json_decode error. json_data:" . $json;
+            $message = "request failed:" . $json;
             throw new LockupException($message);
         }
 
         if ($result['status_code'] != 200) {
-            $message = "lookup host failed. response code:" . $result['status_code'];
+            $message = "request failed:" . $result['status_code'];
             throw new LockupException($message);
         }
 
