@@ -37,11 +37,13 @@ class WriterTest extends PHPUnit_Framework_TestCase
     {
         fwrite($this->socket_client, $this->encoder->pub("phpnsq_1", "test"));
         $data = fread($this->socket_client, 1024);
-        $result = $this->decoder->decode($data);
-        $this->assertTrue($result);
-        $this->assertEquals("OK", $this->decoder->getContent());
-        $this->assertEquals(6, $this->decoder->getSize());
-        $this->assertEquals(0, $this->decoder->getType());
+        $this->decoder->readSize($data);
+        $this->decoder->readType($data);
+        $this->decoder->readContent($data);
+        $frame = $this->decoder->getFrame();
+        $this->assertEquals("OK", $frame->getContent());
+        $this->assertEquals(6, $frame->getSize());
+        $this->assertEquals(0, $frame->getType());
         fwrite($this->socket_client, $this->encoder->sub("phpnsq_1", 1));
 
         fwrite($this->socket_client, $this->encoder->close());
