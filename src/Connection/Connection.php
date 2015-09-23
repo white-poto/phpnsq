@@ -27,15 +27,13 @@ class Connection
     protected $buffer;
 
     /**
-     * @var
-     */
-    protected $callback;
-
-    /**
      * @var Decoder
      */
     protected $decoder;
 
+    /**
+     * @var
+     */
     protected $read_watcher;
 
     /**
@@ -70,6 +68,11 @@ class Connection
         $this->decoder = new Decoder();
     }
 
+    /**
+     * @param $data
+     * @return bool
+     * @throws ConnectionException
+     */
     public function write($data)
     {
         $write_result = socket_write($this->socket, $data, strlen($data));
@@ -84,9 +87,10 @@ class Connection
 
     /**
      * @param $callback
+     * @return $this
      * @throws ConnectionException
      */
-    public function onRead($callback)
+    public function onMessage($callback)
     {
         if (!is_callable($callback)) {
             throw new ConnectionException("params callback is not callable");
@@ -103,6 +107,8 @@ class Connection
 
             return call_user_func($callback, $frame->getMessage());
         });
+
+        return $this;
     }
 
     /**
@@ -157,10 +163,11 @@ class Connection
 
     /**
      * @param int $length
+     * @param bool|true $block
      * @return bool
      * @throws ConnectionException
      */
-    protected function read($length = 4, $block = false)
+    protected function read($length = 4, $block = true)
     {
         if ($block === false) {
             socket_recv($this->socket, $data, $length, MSG_DONTWAIT);
