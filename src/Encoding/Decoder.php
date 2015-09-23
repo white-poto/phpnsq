@@ -67,7 +67,7 @@ class Decoder
             $this->type != self::FRAME_TYPE_MESSAGE ||
             $this->content != self::FRAME_TYPE_RESPONSE
         ) {
-            throw new EncodingException("error frame type. type:" . $type);
+            throw new EncodingException("error frame type. type:" . $this->type);
         }
 
         return $this->type;
