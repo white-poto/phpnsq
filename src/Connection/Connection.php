@@ -66,7 +66,9 @@ class Connection
     {
         $write_result = socket_write($this->socket, $data, strlen($data));
         if ($write_result === false) {
-            throw new ConnectionException("write to socket failed");
+            $message = "write to socket failed. reason:"
+                . socket_strerror(socket_last_error());
+            throw new ConnectionException($message);
         }
 
         return true;
