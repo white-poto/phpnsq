@@ -26,12 +26,58 @@ class Encoder
 
     /**
      * @param $topic
+     * @param $channel
+     * @return string
+     */
+    public function sub($topic, $channel)
+    {
+        return $this->command("SUB", array($topic, $channel));
+    }
+
+    /**
+     * @param $topic
      * @param $data
      * @return string
      */
-    public function publish($topic, $data)
+    public function pub($topic, $data)
     {
         return $this->command("PUB", $topic, $data);
+    }
+
+    /**
+     * @param $count
+     * @return string
+     */
+    public function rdy($count)
+    {
+        return $this->command("RDY", $count);
+    }
+
+    /**
+     * @param $message_id
+     * @return string
+     */
+    public function fin($message_id)
+    {
+        return $this->command("FIN", $message_id);
+    }
+
+    /**
+     * @param $message_id
+     * @return string
+     */
+    public function req($message_id)
+    {
+        return $this->command("REQ", $message_id);
+    }
+
+    /**
+     * @param $message_id
+     * @return string
+     */
+    public function touch($message_id)
+    {
+        return $this->command("TOUCH", $message_id);
     }
 
     /**
@@ -40,6 +86,22 @@ class Encoder
     public function close()
     {
         return $this->command('CLS');
+    }
+
+    /**
+     * @return string
+     */
+    public function nop()
+    {
+        return $this->command("NOP");
+    }
+
+    /**
+     *
+     */
+    public function auth()
+    {
+
     }
 
     /**
