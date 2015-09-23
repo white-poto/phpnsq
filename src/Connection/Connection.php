@@ -122,7 +122,6 @@ class Connection
         if (strlen($data) < 4) {
             $ret = $this->read(4 - strlen($data));
             if ($ret === false) {
-                echo 'non size' . PHP_EOL;
                 return false;
             }
             $data .= $ret;
@@ -134,7 +133,6 @@ class Connection
         if (strlen($data) < 8) {
             $ret = $this->read(8 - strlen($data));
             if ($ret === false) {
-                echo "non type" . PHP_EOL;
                 return false;
             }
             $data .= $ret;
@@ -145,19 +143,15 @@ class Connection
 
         // read content
         if (strlen($data) < 8 + $size) {
-            echo $size . PHP_EOL;
-
-            echo 4 + $size - strlen($data) . PHP_EOL;
             $ret = $this->read(4 + $size - strlen($data));
-            var_dump($ret);
             if ($ret === false) {
-                echo "non content" . PHP_EOL;
                 return false;
             }
             $data .= $ret;
             $this->appendBuffer($ret);
         }
         $content = $this->decoder->readContent($data);
+        $this->buffer = substr($this->buffer, 4 + $size);
 
         return new Frame($size, $type, $content);
     }
