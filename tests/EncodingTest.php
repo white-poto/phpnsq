@@ -25,13 +25,16 @@ class WriterTest extends PHPUnit_Framework_TestCase
         $this->encoder = new \Nsq\Encoding\Encoder();
         $this->decoder = new \Nsq\Encoding\Decoder();
         $this->socket_client = stream_socket_client('tcp://127.0.0.1:4150', $errno, $errstr, 30);
+        $this->write($this->encoder->magic());
+    }
+
+    protected function write($data)
+    {
+        fwrite($this->socket_client, $data);
     }
 
     public function testClose()
     {
-
-
-        fwrite($this->socket_client, $this->encoder->magic());
         fwrite($this->socket_client, $this->encoder->pub("phpnsq_1", "test"));
         $data = fread($this->socket_client, 1024);
         $result = $this->decoder->decode($data);
