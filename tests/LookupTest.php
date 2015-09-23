@@ -38,6 +38,6 @@ class LookupTest extends PHPUnit_Framework_TestCase
     public function testClusterLookup()
     {
         $hosts = $this->lookup_cluster->lookup("phpnsq_1");
-        $this->assertEquals($hosts[0], "127.0.0.1:4150");
+        $this->assertEquals($hosts[0], "waytoft:4150");
     }
 }
