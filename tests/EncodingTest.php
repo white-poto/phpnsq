@@ -34,7 +34,6 @@ class WriterTest extends PHPUnit_Framework_TestCase
         $this->assertEquals("OK", $this->decoder->getContent());
         $this->assertEquals(6, $this->decoder->getSize());
         $this->assertEquals(0, $this->decoder->getType());
-        sleep(5);
         fwrite($socket_client, $this->encoder->close());
     }
 }
