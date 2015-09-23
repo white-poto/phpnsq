@@ -9,7 +9,7 @@
 namespace Nsq\Exception;
 
 
-class LockupException extends \Exception
+class LookupException extends \Exception
 {
 
 }

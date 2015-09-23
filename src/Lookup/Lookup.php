@@ -8,8 +8,7 @@
 
 namespace Nsq\Lookup;
 
-
-use Nsq\Exception\LockupException;
+use Nsq\Exception\LookupException;
 use Nsq\Nsq;
 
 class Lookup
@@ -58,7 +57,7 @@ class Lookup
     /**
      * @param $topic
      * @return mixed
-     * @throws LockupException
+     * @throws LookupException
      */
     public function lookup($topic)
     {
@@ -68,7 +67,7 @@ class Lookup
 
     /**
      * @return mixed
-     * @throws LockupException
+     * @throws LookupException
      */
     public function topics()
     {
@@ -79,7 +78,7 @@ class Lookup
     /**
      * @param $topic
      * @return mixed
-     * @throws LockupException
+     * @throws LookupException
      */
     public function channels($topic)
     {
@@ -89,7 +88,7 @@ class Lookup
 
     /**
      * @return mixed
-     * @throws LockupException
+     * @throws LookupException
      */
     public function nodes()
     {
@@ -101,7 +100,7 @@ class Lookup
      * @param $topic
      * @param $channel
      * @return mixed
-     * @throws LockupException
+     * @throws LookupException
      */
     public function delete_topic($topic, $channel)
     {
@@ -115,7 +114,7 @@ class Lookup
      * @param $topic
      * @param $node
      * @return mixed
-     * @throws LockupException
+     * @throws LookupException
      */
     public function tombstone_topic_producer($topic, $node)
     {
@@ -126,7 +125,7 @@ class Lookup
 
     /**
      * @return mixed
-     * @throws LockupException
+     * @throws LookupException
      */
     public function ping()
     {
@@ -136,7 +135,7 @@ class Lookup
 
     /**
      * @return mixed
-     * @throws LockupException
+     * @throws LookupException
      */
     public function info()
     {
@@ -147,7 +146,7 @@ class Lookup
     /**
      * @param $url
      * @return mixed
-     * @throws LockupException
+     * @throws LookupException
      */
     protected function get($url)
     {
@@ -164,16 +163,21 @@ class Lookup
         );
         curl_setopt_array($ch, $options);
         $json = curl_exec($ch);
+        if ($json === false) {
+            $message = "request failed";
+            throw new LookupException($message);
+        }
+
         $result = json_decode($json, true);
 
         if ($result === false) {
             $message = "request failed:" . $json;
-            throw new LockupException($message);
+            throw new LookupException($message);
         }
 
         if ($result['status_code'] != 200) {
             $message = "request failed:" . $json;
-            throw new LockupException($message);
+            throw new LookupException($message);
         }
 
         return $result;
