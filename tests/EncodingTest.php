@@ -18,24 +18,29 @@ class WriterTest extends PHPUnit_Framework_TestCase
      */
     protected $decoder;
 
+    protected $socket_client;
+
     protected function setUp()
     {
         $this->encoder = new \Nsq\Encoding\Encoder();
         $this->decoder = new \Nsq\Encoding\Decoder();
+        $this->socket_client = stream_socket_client('tcp://127.0.0.1:4150', $errno, $errstr, 30);
     }
 
     public function testClose()
     {
 
-        $socket_client = stream_socket_client('tcp://127.0.0.1:4150', $errno, $errstr, 30);
-        fwrite($socket_client, $this->encoder->magic());
-        fwrite($socket_client, $this->encoder->pub("test", "test"));
-        $data = fread($socket_client, 1024);
+
+        fwrite($this->socket_client, $this->encoder->magic());
+        fwrite($this->socket_client, $this->encoder->pub("php_nsq1", "test"));
+        $data = fread($this->socket_client, 1024);
         $result = $this->decoder->decode($data);
         $this->assertTrue($result);
         $this->assertEquals("OK", $this->decoder->getContent());
         $this->assertEquals(6, $this->decoder->getSize());
         $this->assertEquals(0, $this->decoder->getType());
-        fwrite($socket_client, $this->encoder->close());
+        fwrite($this->socket_client, $this->encoder->sub("php_nsq1", 1));
+
+        fwrite($this->socket_client, $this->encoder->close());
     }
 }
