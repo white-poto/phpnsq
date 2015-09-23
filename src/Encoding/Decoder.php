@@ -41,6 +41,7 @@ class Decoder
         if (strlen($data) < 1) {
             return false;
         }
+        var_dump($data);
 
         $size = unpack("N", $data);
         $this->size = intval($size[1]);
