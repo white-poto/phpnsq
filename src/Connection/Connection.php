@@ -76,7 +76,6 @@ class Connection
         if ($write_result === false) {
             $message = "write to socket failed. reason:"
                 . socket_strerror(socket_last_error());
-            echo $message . PHP_EOL;
             throw new ConnectionException($message);
         }
 
@@ -164,6 +163,12 @@ class Connection
     protected function read($length = 4)
     {
         $ret = socket_recv($this->socket, $data, $length, MSG_DONTWAIT);
+
+        if ($ret === false) {
+            $message = "socket_recv failed. reason:"
+                . socket_strerror(socket_last_error());
+            throw new ConnectionException($message);
+        }
 
         $e_non_blocking = array(
             11,/*EAGAIN or EWOULDBLOCK*/
