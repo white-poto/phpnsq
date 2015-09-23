@@ -172,7 +172,7 @@ class Lookup
         }
 
         if ($result['status_code'] != 200) {
-            $message = "request failed:" . $result['status_code'];
+            $message = "request failed:" . $json;
             throw new LockupException($message);
         }
 
