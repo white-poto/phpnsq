@@ -31,13 +31,13 @@ class LookupTest extends PHPUnit_Framework_TestCase
 
     public function testLookup()
     {
-        $hosts = $this->lookup->lookup("test");
+        $hosts = $this->lookup->lookup("phpnsq_1");
         $this->assertEquals($hosts['status_code'], 200);
     }
 
     public function testClusterLookup()
     {
-        $hosts = $this->lookup_cluster->lookup("test");
+        $hosts = $this->lookup_cluster->lookup("phpnsq_1");
         $this->assertEquals($hosts['status_code'], 200);
     }
 }
