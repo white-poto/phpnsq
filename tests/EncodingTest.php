@@ -18,12 +18,14 @@ class WriterTest extends PHPUnit_Framework_TestCase
      */
     protected $decoder;
 
-    protected function setUp(){
+    protected function setUp()
+    {
         $this->encoder = new \Nsq\Encoding\Encoder();
         $this->decoder = new \Nsq\Encoding\Decoder();
     }
 
-    public function testClose(){
+    public function testClose()
+    {
 
         $socket_client = stream_socket_client('tcp://127.0.0.1:4150', $errno, $errstr, 30);
         fwrite($socket_client, $this->encoder->magic());

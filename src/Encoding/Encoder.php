@@ -9,6 +9,8 @@
 namespace Nsq\Encoding;
 
 
+use Nsq\Exception\EncodingException;
+
 class Encoder
 {
     /**
@@ -42,6 +44,35 @@ class Encoder
     public function pub($topic, $data)
     {
         return $this->command("PUB", $topic, $data);
+    }
+
+    /**
+     * @param $topic
+     * @param $data
+     * @return string
+     * @throws EncodingException
+     */
+    public function mpub($topic, $data)
+    {
+        if (!is_array($data) ||
+            !($data instanceof \ArrayAccess) ||
+            !($data instanceof \Iterator)
+        ) {
+            throw new EncodingException("param data must be a array like param");
+        }
+        $command = "MPUB" . ' ' . $topic . "\n";
+
+        $messages = '';
+        foreach ($data as $value) {
+            $size = pack("N", strlen($value));
+            $messages .= $size . $value;
+        }
+
+        $data_size = pack("N", strlen($messages));
+        $message_count = pack("N", count($data));
+        $command .= $data_size . $message_count . $messages;
+
+        return $command;
     }
 
     /**

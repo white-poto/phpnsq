@@ -11,7 +11,8 @@ namespace Nsq\Connection;
 
 class Connection
 {
-    public function __construct($host, $port){
+    public function __construct($host, $port)
+    {
 
     }
 }
