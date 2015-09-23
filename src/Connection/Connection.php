@@ -117,7 +117,6 @@ class Connection
      */
     public function readFrame($block = false)
     {
-
         $data = $size = $type = $content = NULL;
         if (!$this->buffer->isEmpty()) {
             $data = $this->buffer->get();
@@ -191,14 +190,6 @@ class Connection
         }
 
         return $data;
-    }
-
-    /**
-     * @param $data
-     */
-    protected function appendBuffer($data)
-    {
-        $this->buffer .= $data;
     }
 
     /**
