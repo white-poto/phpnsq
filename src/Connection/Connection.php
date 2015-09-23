@@ -144,7 +144,7 @@ class Connection
         $type = $this->decoder->readType($data);
 
         // read content
-        if ($data_length < 8 + $size) {
+        if (strlen($data) < 8 + $size) {
             echo $size . PHP_EOL;
 
             echo 4 + $size - strlen($data) . PHP_EOL;
