@@ -109,7 +109,7 @@ class Connection
      * @return bool|Frame
      * @throws \Nsq\Exception\EncodingException
      */
-    public function readFrame()
+    public function readFrame($block = false)
     {
 
         $data = $size = $type = $content = NULL;
@@ -119,7 +119,7 @@ class Connection
 
         // read size
         if (strlen($data) < 4) {
-            $ret = $this->read(4 - strlen($data));
+            $ret = $this->read(4 - strlen($data), $block);
             if ($ret === false) {
                 return false;
             }
@@ -130,7 +130,7 @@ class Connection
 
         // read type
         if (strlen($data) < 8) {
-            $ret = $this->read(8 - strlen($data));
+            $ret = $this->read(8 - strlen($data), $block);
             if ($ret === false) {
                 return false;
             }
@@ -142,7 +142,7 @@ class Connection
 
         // read content
         if (strlen($data) < 8 + $size) {
-            $ret = $this->read(4 + $size - strlen($data));
+            $ret = $this->read(4 + $size - strlen($data), $block);
             if ($ret === false) {
                 return false;
             }
@@ -155,28 +155,32 @@ class Connection
         return new Frame($size, $type, $content);
     }
 
-
     /**
      * @param int $length
      * @return bool
+     * @throws ConnectionException
      */
-    protected function read($length = 4)
+    protected function read($length = 4, $block = false)
     {
-        $ret = socket_recv($this->socket, $data, $length, MSG_DONTWAIT);
+        if ($block === false) {
+            socket_recv($this->socket, $data, $length, MSG_DONTWAIT);
+            $e_non_blocking = array(
+                11,/*EAGAIN or EWOULDBLOCK*/
+                115/*EINPROGRESS*/
+            );
+            // Caught EINPROGRESS, EAGAIN, or EWOULDBLOCK
+            if (in_array(socket_last_error(), $e_non_blocking)) {
+                return false;
+            }
 
+            return $data;
+        }
+
+        $ret = socket_recv($this->socket, $data, $length, MSG_WAITALL);
         if ($ret === false) {
             $message = "socket_recv failed. reason:"
                 . socket_strerror(socket_last_error());
             throw new ConnectionException($message);
-        }
-
-        $e_non_blocking = array(
-            11,/*EAGAIN or EWOULDBLOCK*/
-            115/*EINPROGRESS*/
-        );
-        // Caught EINPROGRESS, EAGAIN, or EWOULDBLOCK
-        if (in_array(socket_last_error(), $e_non_blocking)) {
-            return false;
         }
 
         return $data;
