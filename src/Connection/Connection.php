@@ -9,8 +9,8 @@
 namespace Nsq\Connection;
 
 
+use Nsq\Encoding\Buffer;
 use Nsq\Encoding\Decoder;
-use Nsq\Encoding\Frame;
 use Nsq\Exception\ConnectionException;
 use Nsq\Exception\RuntimeException;
 
@@ -26,6 +26,8 @@ class Connection
      * @var integer
      */
     protected $port;
+
+    protected $reconnect_count;
 
     /**
      * @var resource
@@ -49,13 +51,15 @@ class Connection
 
     /**
      * @param $host
-     * @param $port
+     * @param int $port
+     * @param int $reconnect_count
      * @throws ConnectionException
      */
-    public function __construct($host, $port = 4150)
+    public function __construct($host, $port = 4150, $reconnect_count = 3)
     {
         $this->host = $host;
         $this->port = $port;
+        $this->reconnect_count = $reconnect_count;
         $this->reconnect();
 
         $this->buffer = new Buffer();
@@ -68,25 +72,35 @@ class Connection
      */
     public function reconnect()
     {
-        $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-        if ($this->socket === FALSE) {
-            $message = "socket_create() failed: reason: "
-                . socket_strerror(socket_last_error());
-            throw new ConnectionException($message);
-        }
+        $count = 0;
+        while (true) {
+            try {
+                $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+                if ($this->socket === FALSE) {
+                    $message = "socket_create() failed: reason: "
+                        . socket_strerror(socket_last_error());
+                    throw new ConnectionException($message);
+                }
 
-        $connect_result = socket_connect($this->socket, $this->host, $this->port);
-        if ($connect_result === false) {
-            $message = "socket_connect failed. reason:"
-                . socket_strerror(socket_last_error());
-            throw new ConnectionException($message);
-        }
+                $connect_result = socket_connect($this->socket, $this->host, $this->port);
+                if ($connect_result === false) {
+                    $message = "socket_connect failed. reason:"
+                        . socket_strerror(socket_last_error());
+                    throw new ConnectionException($message);
+                }
 
-        $non_block = socket_set_nonblock($this->socket);
-        if ($non_block === false) {
-            $message = "socket_set_nonblock faild. reason:"
-                . socket_strerror(socket_last_error());
-            throw new ConnectionException($message);
+                $non_block = socket_set_nonblock($this->socket);
+                if ($non_block === false) {
+                    $message = "socket_set_nonblock faild. reason:"
+                        . socket_strerror(socket_last_error());
+                    throw new ConnectionException($message);
+                }
+            } catch (\Exception $e) {
+                $count++;
+                if ($count > $this->reconnect_count) throw $e;
+
+                sleep(4 * $count);
+            }
         }
     }
 
@@ -119,7 +133,7 @@ class Connection
         }
 
         $this->read_watcher = new \EvIo($this->socket, \Ev::READ, function ($watcher, $reader) use ($callback) {
-            $frame = $this->readFrame();
+            $frame = $this->decoder->readFame($this);
             if ($frame === false) {
                 return false;
             }
@@ -134,61 +148,12 @@ class Connection
     }
 
     /**
-     * @return bool|Frame
-     * @throws \Nsq\Exception\EncodingException
-     */
-    public function readFrame($block = false)
-    {
-        $data = $size = $type = $content = NULL;
-        if (!$this->buffer->isEmpty()) {
-            $data = $this->buffer->get();
-        }
-
-        // read size
-        if (strlen($data) < 4) {
-            $ret = $this->read(4 - strlen($data), $block);
-            if ($ret === false) {
-                return false;
-            }
-            $data .= $ret;
-            $this->buffer->append($ret);
-        }
-        $size = $this->decoder->readSize($data);
-
-        // read type
-        if (strlen($data) < 8) {
-            $ret = $this->read(8 - strlen($data), $block);
-            if ($ret === false) {
-                return false;
-            }
-            $data .= $ret;
-            $this->buffer->append($ret);
-
-        }
-        $type = $this->decoder->readType($data);
-
-        // read content
-        if (strlen($data) < 8 + $size) {
-            $ret = $this->read(4 + $size - strlen($data), $block);
-            if ($ret === false) {
-                return false;
-            }
-            $data .= $ret;
-            $this->buffer->append($ret);
-        }
-        $content = $this->decoder->readContent($data);
-        $this->buffer->sub(4 + $size);
-
-        return new Frame($size, $type, $content);
-    }
-
-    /**
      * @param int $length
      * @param bool|true $block
      * @return bool
      * @throws ConnectionException
      */
-    protected function read($length = 4, $block = true)
+    public function read($length = 4, $block = true)
     {
         if ($block === false) {
             socket_recv($this->socket, $data, $length, MSG_DONTWAIT);
@@ -214,11 +179,23 @@ class Connection
         return $data;
     }
 
-    /**
-     *
-     */
-    public static function run()
+    public function equal($host, $port)
     {
-        \Ev::run();
+        return $this->host == $host && $this->port == $port;
+    }
+
+    public function getSocket()
+    {
+        return $this->socket;
+    }
+
+    public function close()
+    {
+        socket_close($this->socket);
+    }
+
+    public function __destruct()
+    {
+        $this->close();
     }
 }

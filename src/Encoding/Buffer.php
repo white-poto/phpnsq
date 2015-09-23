@@ -6,7 +6,7 @@
  * Time: 17:57
  */
 
-namespace Nsq\Connection;
+namespace Nsq\Encoding;
 
 
 class Buffer

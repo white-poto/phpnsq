@@ -26,11 +26,7 @@ class LookupCluster
      */
     public function __construct($host_list)
     {
-        if (!is_array($host_list)) {
-            $this->host_list = array($host_list);
-        } else {
-            $this->host_list = $host_list;
-        }
+        $this->host_list = $host_list;
         $this->initLookupInstances();
     }
 
@@ -39,22 +35,12 @@ class LookupCluster
      */
     protected function initLookupInstances()
     {
-        foreach ($this->host_list as $host) {
+        $host_list = explode(',', $this->host_list);
+        foreach ($host_list as $host) {
             $host_info = explode(':', $host);
             $lookup = new Lookup($host_info[0], $host_info[1]);
             array_push($this->lookup_instances, $lookup);
         }
-    }
-
-    /**
-     * @param $host
-     * @param $port
-     */
-    public function addLookup($host, $port)
-    {
-        array_push($this->host_list, "{$host}:{$port}");
-        $lookup = new Lookup($host, $port);
-        array_push($this->lookup_instances, $lookup);
     }
 
     /**

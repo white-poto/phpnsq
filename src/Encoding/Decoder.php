@@ -9,7 +9,9 @@
 namespace Nsq\Encoding;
 
 
+use Nsq\Connection\Connection;
 use Nsq\Exception\EncodingException;
+use Nsq\Encoding\Buffer;
 
 class Decoder
 {
@@ -31,6 +33,69 @@ class Decoder
      * @var string
      */
     protected $content;
+
+    /**
+     * @var Buffer
+     */
+    protected $buffer;
+
+    public function __construct()
+    {
+        $this->buffer = new Buffer();
+    }
+
+    /**
+     * @param Connection $con
+     * @param bool|true $block
+     * @return bool|Frame
+     * @throws EncodingException
+     * @throws \Nsq\Exception\ConnectionException
+     */
+    public function readFame(Connection $con, $block = true)
+    {
+        $data = $size = $type = $content = NULL;
+        if (!$this->buffer->isEmpty()) {
+            $data = $this->buffer->get();
+        }
+
+        // read size
+        if (strlen($data) < 4) {
+            $ret = $con->read(4 - strlen($data), $block);
+            if ($ret === false) {
+                return false;
+            }
+            $data .= $ret;
+            $this->buffer->append($ret);
+        }
+        $size = $this->readSize($data);
+
+        // read type
+        if (strlen($data) < 8) {
+            $ret = $con->read(8 - strlen($data), $block);
+            if ($ret === false) {
+                return false;
+            }
+            $data .= $ret;
+            $this->buffer->append($ret);
+
+        }
+        $type = $this->readType($data);
+
+        // read content
+        if (strlen($data) < 8 + $size) {
+            $ret = $con->read(4 + $size - strlen($data), $block);
+            if ($ret === false) {
+                return false;
+            }
+            $data .= $ret;
+            $this->buffer->append($ret);
+        }
+        $content = $this->readContent($data);
+        $this->buffer->sub(4 + $size);
+
+        return new Frame($size, $type, $content);
+    }
+
 
     /**
      * @param $data
