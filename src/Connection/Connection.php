@@ -113,7 +113,7 @@ class Connection
     public function readFrame()
     {
 
-        $data = $size = $type = $content = '';
+        $data = $size = $type = $content = NULL;
         if (!empty($this->buffer)) {
             $data = $this->buffer;
         }
