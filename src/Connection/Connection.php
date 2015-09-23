@@ -123,7 +123,6 @@ class Connection
         if ($data_length < 4) {
             $ret = $this->read(4 - $data_length);
             if ($ret === false) {
-                echo 'non size' . PHP_EOL;
                 return false;
             }
             $data .= $ret;
@@ -135,7 +134,6 @@ class Connection
         if ($data_length < 8) {
             $ret = $this->read(8 - $data_length);
             if ($ret === false) {
-                echo "non type" . PHP_EOL;
                 return false;
             }
             $data .= $ret;
@@ -146,12 +144,8 @@ class Connection
 
         // read content
         if ($data_length < 8 + $size) {
-            echo $size . PHP_EOL;
-
-            echo 8 + $size - $data_length . PHP_EOL;
-            $ret = $this->read(8 + $size - $data_length);
+            $ret = $this->read(4 + $size - $data_length);
             if ($ret === false) {
-                echo "non content" . PHP_EOL;
                 return false;
             }
             $data .= $ret;
