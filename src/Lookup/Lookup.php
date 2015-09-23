@@ -167,6 +167,7 @@ class Lookup
         $json = curl_exec($ch);
         if ($json === false) {
             $message = "request failed";
+            echo curl_error($ch) . PHP_EOL;
             throw new LookupException($message);
         }
 
