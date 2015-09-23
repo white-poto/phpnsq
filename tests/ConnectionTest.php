@@ -20,12 +20,13 @@ class ConnectionTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->connection = new \Nsq\Connection\Connection("127.0.0.1", 4150);
-        $this->encoder = new \Nsq\Encoding\Encoder();
+
     }
 
     public function testWrite()
     {
+        $this->connection = new \Nsq\Connection\Connection("127.0.0.1", 4150);
+        $this->encoder = new \Nsq\Encoding\Encoder();
         $this->assertTrue($this->connection->write($this->encoder->magic()));
         $this->assertTrue($this->connection->write($this->encoder->pub("phpnsq_1", "test")));
         $frame = $this->connection->readFrame();
