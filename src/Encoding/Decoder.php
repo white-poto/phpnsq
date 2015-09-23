@@ -63,8 +63,8 @@ class Decoder
         $type = unpack("N", $type_data);
         $this->type = intval($type[1]);
         if (
-            $this->type != self::FRAME_TYPE_ERROR ||
-            $this->type != self::FRAME_TYPE_MESSAGE ||
+            $this->type != self::FRAME_TYPE_ERROR &&
+            $this->type != self::FRAME_TYPE_MESSAGE &&
             $this->content != self::FRAME_TYPE_RESPONSE
         ) {
             throw new EncodingException("error frame type. type:" . $this->type);
