@@ -68,6 +68,7 @@ class Connection
         if ($write_result === false) {
             $message = "write to socket failed. reason:"
                 . socket_strerror(socket_last_error());
+            echo $message . PHP_EOL;
             throw new ConnectionException($message);
         }
 
