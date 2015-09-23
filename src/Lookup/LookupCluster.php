@@ -70,7 +70,7 @@ class LookupCluster
             $hosts = $host_list['data']['producers'];
             foreach ($hosts as $host) {
                 print_r($host);
-                $nsq_host_lists[] = $host['remote_address'] . ':' . $host['tcp_port'];
+                $nsq_host_lists[] = $host['broadcast_address'] . ':' . $host['tcp_port'];
             }
         }
 
