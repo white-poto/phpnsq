@@ -27,6 +27,16 @@ class Encoder
     }
 
     /**
+     * @param $config
+     * @return string
+     */
+    public function identify($config)
+    {
+        $data = json_encode($config);
+        return $this->command("IDENTIFY", NULL, $data);
+    }
+
+    /**
      * @param $topic
      * @param $channel
      * @return string
