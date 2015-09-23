@@ -119,7 +119,7 @@ class Connection
         }
 
         // read size
-        if ($data_length < 4) {
+        if (strlen($data) < 4) {
             $ret = $this->read(4 - strlen($data));
             if ($ret === false) {
                 echo 'non size' . PHP_EOL;
@@ -131,7 +131,7 @@ class Connection
         $size = $this->decoder->readSize($data);
 
         // read type
-        if ($data_length < 8) {
+        if (strlen($data) < 8) {
             $ret = $this->read(8 - strlen($data));
             if ($ret === false) {
                 echo "non type" . PHP_EOL;
