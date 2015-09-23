@@ -16,6 +16,17 @@ use Nsq\Exception\RuntimeException;
 
 class Connection
 {
+
+    /**
+     * @var string
+     */
+    protected $host;
+
+    /**
+     * @var integer
+     */
+    protected $port;
+
     /**
      * @var resource
      */
@@ -41,7 +52,21 @@ class Connection
      * @param $port
      * @throws ConnectionException
      */
-    public function __construct($host, $port)
+    public function __construct($host, $port = 4150)
+    {
+        $this->host = $host;
+        $this->port = $port;
+        $this->reconnect();
+
+        $this->buffer = new Buffer();
+        $this->decoder = new Decoder();
+    }
+
+    /**
+     * reconnect to nsq server
+     * @throws ConnectionException
+     */
+    public function reconnect()
     {
         $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         if ($this->socket === FALSE) {
@@ -50,7 +75,7 @@ class Connection
             throw new ConnectionException($message);
         }
 
-        $connect_result = socket_connect($this->socket, $host, $port);
+        $connect_result = socket_connect($this->socket, $this->host, $this->port);
         if ($connect_result === false) {
             $message = "socket_connect failed. reason:"
                 . socket_strerror(socket_last_error());
@@ -63,9 +88,6 @@ class Connection
                 . socket_strerror(socket_last_error());
             throw new ConnectionException($message);
         }
-
-        $this->buffer = new Buffer();
-        $this->decoder = new Decoder();
     }
 
     /**
