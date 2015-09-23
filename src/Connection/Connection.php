@@ -146,6 +146,9 @@ class Connection
 
         // read content
         if ($data_length < 8 + $size) {
+            echo $size . PHP_EOL;
+
+            echo 8 + $size - $data_length . PHP_EOL;
             $ret = $this->read(8 + $size - $data_length);
             if ($ret === false) {
                 echo "non content" . PHP_EOL;
