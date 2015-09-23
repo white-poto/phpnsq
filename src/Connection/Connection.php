@@ -126,6 +126,7 @@ class Connection
                 return false;
             }
             $data .= $ret;
+            var_dump($data);
             $this->appendBuffer($ret);
         }
         $size = $this->decoder->readSize($data);
