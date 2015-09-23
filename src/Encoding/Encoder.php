@@ -154,7 +154,7 @@ class Encoder
     protected function command($command, $params = null, $data = null)
     {
         if (is_array($params)) {
-            $params = explode(' ', $params);
+            $params = implode(' ', $params);
         }
         if (!is_null($data)) {
             $size = pack('N', strlen($data));
