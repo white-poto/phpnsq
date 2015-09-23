@@ -162,6 +162,7 @@ class Lookup
             CURLOPT_FAILONERROR => true
         );
         curl_setopt_array($ch, $options);
+        echo $url . PHP_EOL;
         $json = curl_exec($ch);
         if ($json === false) {
             $message = "request failed";
