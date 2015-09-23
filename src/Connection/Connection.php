@@ -121,19 +121,18 @@ class Connection
 
         // read size
         if ($data_length < 4) {
-            $ret = $this->read(4 - strlen($data_length));
+            $ret = $this->read(4 - $data_length);
             if ($ret === false) {
                 return false;
             }
             $data .= $ret;
-            var_dump($data);
             $this->appendBuffer($ret);
         }
         $size = $this->decoder->readSize($data);
 
         // read type
         if ($data_length < 8) {
-            $ret = $this->read(8 - strlen($data_length));
+            $ret = $this->read(8 - $data_length);
             if ($ret === false) {
                 return false;
             }
