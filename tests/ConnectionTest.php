@@ -28,6 +28,7 @@ class ConnectionTest extends PHPUnit_Framework_TestCase
         $this->connection = new \Nsq\Connection\Connection("127.0.0.1", 4150);
         $this->encoder = new \Nsq\Encoding\Encoder();
         $this->assertTrue($this->connection->write($this->encoder->magic()));
+        sleep(10);
         $this->assertTrue($this->connection->write($this->encoder->pub("phpnsq_1", "test")));
         $frame = $this->connection->readFrame();
         $this->assertEquals("OK", $frame->getContent());
