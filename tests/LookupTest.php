@@ -26,7 +26,7 @@ class LookupTest extends PHPUnit_Framework_TestCase
         $host = "127.0.0.1";
         $port = 4161;
         $this->lookup = new \Nsq\Lookup\Lookup($host, $port);
-        $this->lookup_cluster = new \Nsq\Lookup\LookupCluster($host . ':' . $port);
+        $this->lookup_cluster = new \Nsq\Lookup\LookupCluster($host . ':' . $port, "phpnsq_1");
     }
 
     public function testLookup()
@@ -37,7 +37,7 @@ class LookupTest extends PHPUnit_Framework_TestCase
 
     public function testClusterLookup()
     {
-        $hosts = $this->lookup_cluster->lookup("phpnsq_1");
+        $hosts = $this->lookup_cluster->lookup();
         $this->assertEquals($hosts[0], "waytoft:4150");
     }
 }
