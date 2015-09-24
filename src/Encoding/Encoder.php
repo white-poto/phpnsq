@@ -13,10 +13,19 @@ use Nsq\Exception\EncodingException;
 
 class Encoder
 {
-    /**
-     *
-     */
     const MAGIC_V2 = '  V2';
+
+    const IDENTIFY = "IDENTIFY";
+    const PING = "PING";
+    const SUB = "SUB";
+    const PUB = "PUB";
+    const MPUB = "MPUB";
+    const RDY = "RDY";
+    const FIN = "FIN";
+    const REQ = "REQ";
+    const TOUCH = "TOUCH";
+    const CLS = "CLS";
+    const NOP = "NOP";
 
     /**
      * @return string
@@ -33,7 +42,15 @@ class Encoder
     public function identify($config)
     {
         $data = json_encode($config);
-        return $this->command("IDENTIFY", NULL, $data);
+        return $this->command(self::IDENTIFY, NULL, $data);
+    }
+
+    /**
+     * @return string
+     */
+    public function ping()
+    {
+        return $this->command(self::PING);
     }
 
     /**
@@ -43,7 +60,7 @@ class Encoder
      */
     public function sub($topic, $channel)
     {
-        return $this->command("SUB", array($topic, $channel));
+        return $this->command(self::SUB, array($topic, $channel));
     }
 
     /**
@@ -53,7 +70,7 @@ class Encoder
      */
     public function pub($topic, $data)
     {
-        return $this->command("PUB", $topic, $data);
+        return $this->command(self::PUB, $topic, $data);
     }
 
     /**
@@ -70,7 +87,7 @@ class Encoder
         ) {
             throw new EncodingException("param data must be a array like param");
         }
-        $command = "MPUB" . ' ' . $topic . "\n";
+        $command = self::MPUB . ' ' . $topic . "\n";
 
         $messages = '';
         foreach ($data as $value) {
@@ -91,7 +108,7 @@ class Encoder
      */
     public function rdy($count)
     {
-        return $this->command("RDY", $count);
+        return $this->command(self::RDY, $count);
     }
 
     /**
@@ -100,7 +117,7 @@ class Encoder
      */
     public function fin($message_id)
     {
-        return $this->command("FIN", $message_id);
+        return $this->command(self::FIN, $message_id);
     }
 
     /**
@@ -109,7 +126,7 @@ class Encoder
      */
     public function req($message_id)
     {
-        return $this->command("REQ", $message_id);
+        return $this->command(self::REQ, $message_id);
     }
 
     /**
@@ -118,15 +135,15 @@ class Encoder
      */
     public function touch($message_id)
     {
-        return $this->command("TOUCH", $message_id);
+        return $this->command(self::TOUCH, $message_id);
     }
 
     /**
      * @return string
      */
-    public function close()
+    public function cls()
     {
-        return $this->command('CLS');
+        return $this->command(self::CLS);
     }
 
     /**
@@ -134,7 +151,7 @@ class Encoder
      */
     public function nop()
     {
-        return $this->command("NOP");
+        return $this->command(self::NOP);
     }
 
     /**

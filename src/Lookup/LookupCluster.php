@@ -21,12 +21,15 @@ class LookupCluster
      */
     protected $host_list;
 
+    protected $topic;
+
     /**
      * @param $host_list
      */
-    public function __construct($host_list)
+    public function __construct($host_list, $topic)
     {
         $this->host_list = $host_list;
+        $this->topic = $topic;
         $this->initLookupInstances();
     }
 
@@ -47,11 +50,11 @@ class LookupCluster
      * @param $topic
      * @return array
      */
-    public function lookup($topic)
+    public function lookup()
     {
         $nsq_host_lists = array();
         foreach ($this->lookup_instances as $lookup) {
-            $host_list = $lookup->lookup($topic);
+            $host_list = $lookup->lookup($this->topic);
             $hosts = $host_list['data']['producers'];
             foreach ($hosts as $host) {
                 $nsq_host_lists[] = $host['broadcast_address'] . ':' . $host['tcp_port'];
