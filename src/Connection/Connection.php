@@ -97,6 +97,7 @@ class Connection
                 }
             } catch (\Exception $e) {
                 $count++;
+                echo $count . PHP_EOL;
                 if ($count > $this->reconnect_count) throw $e;
 
                 sleep(4 * $count);
