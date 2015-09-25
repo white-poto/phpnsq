@@ -21,7 +21,7 @@ class ConnectionPool implements \Iterator
     /**
      * @var LookupCluster
      */
-    protected $lookup;
+    protected $lookup = null;
 
     protected $topic;
 
@@ -47,6 +47,10 @@ class ConnectionPool implements \Iterator
      */
     protected function refreshConnections()
     {
+        if (is_null($this->lookup)) {
+            return;
+        }
+
         $this->host_list = $this->lookup->lookup();
         // add new connections
         foreach ($this->host_list as $host) {

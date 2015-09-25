@@ -17,6 +17,8 @@ use Nsq\Exception\RuntimeException;
 class Connection
 {
 
+    const RECONNECT_WAIT_TIME = 4;
+
     /**
      * @var string
      */
@@ -102,7 +104,7 @@ class Connection
                 echo $count . PHP_EOL;
                 if ($count > $this->reconnect_count) throw $e;
 
-                sleep(4 * $count);
+                sleep(self::RECONNECT_WAIT_TIME * $count);
             }
         }
     }

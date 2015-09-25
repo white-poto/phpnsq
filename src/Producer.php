@@ -11,5 +11,28 @@ namespace Nsq;
 
 class Producer
 {
+    public function ping()
+    {
 
+    }
+
+    public function stop()
+    {
+
+    }
+
+    public function publishAsync()
+    {
+
+    }
+
+    public function multiPublishAsync()
+    {
+
+    }
+
+    public function publish()
+    {
+
+    }
 }

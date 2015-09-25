@@ -57,7 +57,7 @@ class LookupCluster
             $host_list = $lookup->lookup($this->topic);
             $hosts = $host_list['data']['producers'];
             foreach ($hosts as $host) {
-                $nsq_host_lists[] = $host['broadcast_address'] . ':' . $host['tcp_port'];
+                $nsq_host_lists[] = array('host' => $host['broadcast_address'], 'port' => $host['tcp_port']);
             }
         }
 
