@@ -95,6 +95,8 @@ class Connection
                         . socket_strerror(socket_last_error());
                     throw new ConnectionException($message);
                 }
+
+                break;
             } catch (\Exception $e) {
                 $count++;
                 echo $count . PHP_EOL;
