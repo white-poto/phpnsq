@@ -29,7 +29,9 @@ class ConnectionTest extends PHPUnit_Framework_TestCase
         $this->encoder = new \Nsq\Encoding\Encoder();
         $this->assertTrue($this->connection->write($this->encoder->magic()));
         $this->assertTrue($this->connection->write($this->encoder->pub("phpnsq_1", "test")));
-        $frame = $this->connection->readFrame();
+        $decoder = new \Nsq\Encoding\Decoder();
+        $decoder->readFame($this->connection, true);
+        $frame = $decoder->getFrame();
         $this->assertEquals("OK", $frame->getContent());
     }
 }
